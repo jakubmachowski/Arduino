@@ -93,9 +93,9 @@ void dump_byte_array1(byte *buffer, byte bufferSize) {
  * @return true when the given key worked, false otherwise.
  */
  
-bool try_key(MFRC522::MIFARE_Key *key)
+boolean try_key(MFRC522::MIFARE_Key *key)
 {
-    bool result = false;
+    boolean result = false;
     
     for(byte block = 0; block < 64; block++){
       
