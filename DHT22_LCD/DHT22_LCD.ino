@@ -1,8 +1,8 @@
-#include <dht.h>
-#include <Wire.h> // Standardowa biblioteka Arduino.
-#include <LiquidCrystal_I2C.h> // Dołączenie pobranej biblioteki I2C dla LCD.
+#include <dht.h> //Biblioteka czujnika DHT.
+#include <Wire.h> //Standardowa biblioteka Arduino.
+#include <LiquidCrystal_I2C.h> //Dołączenie pobranej biblioteki I2C dla LCD.
 
-LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Ustawienie adresu układu na 0x27.
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  //Ustawienie adresu układu na 0x27.
 
 /* Ikona termometru */
 byte tempIcon[] = {
@@ -28,7 +28,7 @@ byte wilIcon[] = {
   B01110
 };
 
-/* Ikona stopni Celsjusa */
+/* Ikona stopni Celsjusza */
 byte stpIcon[] = {
   B01000,
   B10100,
