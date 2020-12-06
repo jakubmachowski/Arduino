@@ -204,7 +204,7 @@ void MFRC522::PCD_Init() {
 	
 		if (digitalRead(_resetPowerDownPin) == LOW) {	// The MFRC522 chip is in power down mode.
 			pinMode(_resetPowerDownPin, OUTPUT);		// Now set the resetPowerDownPin as digital output.
-			digitalWrite(_resetPowerDownPin, LOW);		// Make shure we have a clean LOW state.
+			digitalWrite(_resetPowerDownPin, LOW);		// Make sure we have a clean LOW state.
 			delayMicroseconds(2);				// 8.8.1 Reset timing requirements says about 100ns. Let us be generous: 2μsl
 			digitalWrite(_resetPowerDownPin, HIGH);		// Exit power down mode. This triggers a hard reset.
 			// Section 8.8.2 in the datasheet says the oscillator start-up time is the start up time of the crystal + 37,74μs. Let us be generous: 50ms.
@@ -1281,7 +1281,7 @@ const __FlashStringHelper *MFRC522::GetStatusCodeName(MFRC522::StatusCode code	/
 	switch (code) {
 		case STATUS_OK:				return F("Success.");
 		case STATUS_ERROR:			return F("Error in communication.");
-		case STATUS_COLLISION:		return F("Collission detected.");
+		case STATUS_COLLISION:		return F("Collision detected.");
 		case STATUS_TIMEOUT:		return F("Timeout in communication.");
 		case STATUS_NO_ROOM:		return F("A buffer is not big enough.");
 		case STATUS_INTERNAL_ERROR:	return F("Internal error in the code. Should not happen.");
@@ -1369,8 +1369,6 @@ void MFRC522::PCD_DumpVersionToSerial() {
  * Dumps debug info about the selected PICC to Serial.
  * On success the PICC is halted after dumping the data.
  * For MIFARE Classic the factory default key of 0xFFFFFFFFFFFF is tried.  
- *
- * @DEPRECATED Kept for bakward compatibility
  */
 void MFRC522::PICC_DumpToSerial(Uid *uid	///< Pointer to Uid struct returned from a successful PICC_Select().
 								) {
@@ -1416,8 +1414,6 @@ void MFRC522::PICC_DumpToSerial(Uid *uid	///< Pointer to Uid struct returned fro
 
 /**
  * Dumps card info (UID,SAK,Type) about the selected PICC to Serial.
- *
- * @DEPRECATED kept for backward compatibility
  */
 void MFRC522::PICC_DumpDetailsToSerial(Uid *uid	///< Pointer to Uid struct returned from a successful PICC_Select().
 									) {

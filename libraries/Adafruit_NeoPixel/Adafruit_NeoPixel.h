@@ -36,11 +36,17 @@
 #ifndef ADAFRUIT_NEOPIXEL_H
 #define ADAFRUIT_NEOPIXEL_H
 
-#if (ARDUINO >= 100)
- #include <Arduino.h>
-#else
- #include <WProgram.h>
- #include <pins_arduino.h>
+#ifdef ARDUINO
+  #if (ARDUINO >= 100)
+  #include <Arduino.h>
+  #else
+  #include <WProgram.h>
+  #include <pins_arduino.h>
+  #endif
+#endif
+
+#ifdef TARGET_LPC1768
+  #include <Arduino.h>
 #endif
 
 // The order of primary colors in the NeoPixel data stream can vary among
@@ -195,14 +201,14 @@ class Adafruit_NeoPixel {
  public:
 
   // Constructor: number of LEDs, pin number, LED type
-  Adafruit_NeoPixel(uint16_t n, uint8_t pin=6,
+  Adafruit_NeoPixel(uint16_t n, uint16_t pin=6,
     neoPixelType type=NEO_GRB + NEO_KHZ800);
   Adafruit_NeoPixel(void);
   ~Adafruit_NeoPixel();
 
   void              begin(void);
   void              show(void);
-  void              setPin(uint8_t p);
+  void              setPin(uint16_t p);
   void              setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b);
   void              setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b,
                       uint8_t w);
@@ -225,7 +231,12 @@ class Adafruit_NeoPixel {
     @return  1 or true if show() will start sending immediately, 0 or false
              if show() would block (meaning some idle time is available).
   */
-  boolean           canShow(void) { return (micros() - endTime) >= 300L; }
+  bool canShow(void) {
+    if (endTime > micros()) {
+      endTime = micros();
+    }
+    return (micros() - endTime) >= 300L;
+  }
   /*!
     @brief   Get a pointer directly to the NeoPixel data buffer in RAM.
              Pixel data is stored in a device-native format (a la the NEO_*
@@ -246,7 +257,7 @@ class Adafruit_NeoPixel {
     @brief   Retrieve the pin number used for NeoPixel data output.
     @return  Arduino pin number (-1 if not set).
   */
-  int8_t            getPin(void) const { return pin; };
+  int16_t           getPin(void) const { return pin; };
   /*!
     @brief   Return the number of pixels in an Adafruit_NeoPixel strip object.
     @return  Pixel count (0 if not set).
@@ -329,12 +340,12 @@ class Adafruit_NeoPixel {
  protected:
 
 #ifdef NEO_KHZ400  // If 400 KHz NeoPixel support enabled...
-  boolean           is800KHz;   ///< true if 800 KHz pixels
+  bool              is800KHz;   ///< true if 800 KHz pixels
 #endif
-  boolean           begun;      ///< true if begin() previously called
+  bool              begun;      ///< true if begin() previously called
   uint16_t          numLEDs;    ///< Number of RGB LEDs in strip
   uint16_t          numBytes;   ///< Size of 'pixels' buffer below
-  int8_t            pin;        ///< Output pin number (-1 if not yet set)
+  int16_t           pin;        ///< Output pin number (-1 if not yet set)
   uint8_t           brightness; ///< Strip brightness 0-255 (stored as +1)
   uint8_t          *pixels;     ///< Holds LED color values (3 or 4 bytes each)
   uint8_t           rOffset;    ///< Red index within each 3- or 4-byte pixel
@@ -345,6 +356,10 @@ class Adafruit_NeoPixel {
 #ifdef __AVR__
   volatile uint8_t *port;       ///< Output PORT register
   uint8_t           pinMask;    ///< Output PORT bitmask
+#endif
+#if defined(ARDUINO_ARCH_STM32) || defined(ARDUINO_ARCH_ARDUINO_CORE_STM32)
+  GPIO_TypeDef *gpioPort;       ///< Output GPIO PORT
+  uint32_t gpioPin;             ///< Output GPIO PIN
 #endif
 };
 
